@@ -1,0 +1,61 @@
+---
+- name: Create SSL certificate directory
+  ansible.builtin.file:
+    path: "{{ _acme.ssl_path }}"
+    state: directory
+    owner: root
+    group: haproxy
+    mode: "0750"
+
+- name: Create sync-certificates service drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/sync-certificates.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  notify: Reload systemd daemon
+
+- name: "Create service drop-in directory for {{ _acme.instance_name }}"
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ _acme.instance_name }}.service.d"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  notify: Reload systemd daemon
+
+- name: Install sync-certificates service drop-ins
+  ansible.builtin.template:
+    src: "etc/systemd/system/sync-certificates.service.d/{{ item }}.j2"
+    dest: "/etc/systemd/system/sync-certificates.service.d/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - 50-environment.conf
+    - 51-reload-haproxy.conf
+  notify: Reload systemd daemon
+
+- name: "Install service drop-in for {{ _acme.instance_name }}"
+  ansible.builtin.template:
+    src: etc/systemd/system/haproxy.service.d/50-after-sync-certificates.conf.j2
+    dest: "/etc/systemd/system/{{ _acme.instance_name }}.service.d/50-after-sync-certificates.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd daemon
+
+- name: Flush handlers to reload systemd before running cert sync
+  ansible.builtin.meta: flush_handlers
+
+- name: Sync certificates from S3
+  ansible.builtin.systemd:
+    name: sync-certificates.service
+    state: started
+
+- name: Enable and start sync-certificates timer
+  ansible.builtin.systemd:
+    name: sync-certificates.timer
+    state: started
+    enabled: true

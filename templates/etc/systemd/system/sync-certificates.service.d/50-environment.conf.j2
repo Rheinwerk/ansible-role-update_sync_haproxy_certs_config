@@ -1,0 +1,4 @@
+{{ ansible_managed | comment }}
+[Service]
+Environment="SYNC_BUCKET={{ _acme.s3_bucket }}"
+Environment="SYNC_PATH={{ _acme.ssl_path }}"

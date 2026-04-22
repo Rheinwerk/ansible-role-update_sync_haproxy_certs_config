@@ -1,0 +1,6 @@
+# vim: ft=yaml et ts=2
+---
+_acme:
+  s3_bucket: ""
+  ssl_path: "/etc/haproxy/ssl"
+  instance_name: "haproxy"
