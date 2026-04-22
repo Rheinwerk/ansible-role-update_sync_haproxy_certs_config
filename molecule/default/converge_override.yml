@@ -1,0 +1,6 @@
+---
+# skip idempotence tests
+- name: Include sync_haproxy_certs install role
+  ansible.builtin.include_role:
+    name: sync_haproxy_certs
+  when: "'molecule-idempotence-notest' not in ansible_skip_tags"

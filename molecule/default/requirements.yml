@@ -1,0 +1,3 @@
+- src: https://github.com/Rheinwerk/ansible-role-sync_haproxy_certs.git
+  name: sync_haproxy_certs
+  scm: git
