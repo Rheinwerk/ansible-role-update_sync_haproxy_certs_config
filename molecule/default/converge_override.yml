@@ -1,4 +1,12 @@
 ---
+# The role configures the certificate directory of an installed haproxy (group haproxy, /etc/haproxy),
+# which the haproxy image provides in production
+- name: Install haproxy as test prerequisite
+  ansible.builtin.apt:
+    name: haproxy
+    state: present
+  when: "'molecule-idempotence-notest' not in ansible_skip_tags"
+
 # skip idempotence tests
 - name: Include sync_haproxy_certs install role
   ansible.builtin.include_role:
