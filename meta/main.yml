@@ -6,6 +6,8 @@ galaxy_info:
   company: Rheinwerk
   license: license (GPLv3)
   min_ansible_version: 2.10.0
+  # lint only: the sync-certificates service needs the S3 bucket and AWS credentials, which a container has not
+  min_ansible_container_version: "X"
   platforms:
     - name: Ubuntu
       versions:
