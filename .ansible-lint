@@ -1,0 +1,10 @@
+offline: true
+
+skip_list:
+  - name[template]
+  - role-name
+  - yaml
+
+# converge_override.yml is a task list the shared converge includes, not a playbook
+kinds:
+  - tasks: "**/molecule/default/converge_override.yml"
